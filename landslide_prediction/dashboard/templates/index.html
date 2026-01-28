@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landslide Risk Dashboard</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f2f5;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+      .subtitle {
+        color: #7f8c8d;
+      }
+
+      /* Risk Card */
+      .risk-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        transition:
+          background-color 0.5s ease,
+          color 0.5s ease;
+      }
+      .risk-label {
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        color: #555;
+      }
+      .risk-value {
+        font-size: 4rem;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      /* Risk Colors */
+      .risk-low {
+        border-left: 10px solid #27ae60;
+      }
+      .risk-low .risk-value {
+        color: #27ae60;
+      }
+
+      .risk-moderate {
+        border-left: 10px solid #f39c12;
+      }
+      .risk-moderate .risk-value {
+        color: #f39c12;
+      }
+
+      .risk-high {
+        background-color: #e74c3c;
+        color: white;
+        animation: pulse 2s infinite;
+      }
+      .risk-high .risk-label {
+        color: #ecf0f1;
+      }
+      .risk-high .risk-value {
+        color: white;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+        }
+        70% {
+          transform: scale(1.02);
+          box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+        }
+      }
+
+      /* Sensor Grid */
+      .sensor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+      }
+      .sensor-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+      .sensor-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      .sensor-name {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        margin-bottom: 5px;
+      }
+      .sensor-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+      .sensor-unit {
+        font-size: 0.8rem;
+        color: #95a5a6;
+      }
+
+      /* Alert Box */
+      .alert-box {
+        display: none;
+        background-color: #c0392b;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        color: #bdc3c7;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Landslide Prediction System</h1>
+        <div class="subtitle">Real-time Digital Twin & ML Monitoring</div>
+      </header>
+
+      <div id="alertBox" class="alert-box">
+        ⚠ CRITICAL WARNING: HIGH LANDSLIDE RISK DETECTED!
+      </div>
+
+      <div id="riskCard" class="risk-card risk-low">
+        <div class="risk-label">Current Risk Level</div>
+        <div class="risk-value" id="riskValue">--</div>
+      </div>
+
+      <div class="sensor-grid">
+        <div class="sensor-card">
+          <div class="sensor-icon">🌧</div>
+          <div class="sensor-name">Rainfall</div>
+          <span class="sensor-value" id="valRain">--</span>
+          <span class="sensor-unit">mm/h</span>
+        </div>
+
+        <div class="sensor-card">
+          <div class="sensor-icon">💧</div>
+          <div class="sensor-name">Soil Moisture</div>
+          <span class="sensor-value" id="valMoist">--</span>
+          <span class="sensor-unit">%</span>
+        </div>
+
+        <div class="sensor-card">
+          <div class="sensor-icon">〰</div>
+          <div class="sensor-name">Vibration</div>
+          <span class="sensor-value" id="valVib">--</span>
+          <span class="sensor-unit">norm</span>
+        </div>
+
+        <div class="sensor-card">
+          <div class="sensor-icon">🌡</div>
+          <div class="sensor-name">Temperature</div>
+          <span class="sensor-value" id="valTemp">--</span>
+          <span class="sensor-unit">°C</span>
+        </div>
+
+        <div class="sensor-card">
+          <div class="sensor-icon">🧖</div>
+          <div class="sensor-name">Humidity</div>
+          <span class="sensor-value" id="valHum">--</span>
+          <span class="sensor-unit">%</span>
+        </div>
+      </div>
+
+      <footer>Academic Prototype - Decision Support System</footer>
+    </div>
+
+    <script>
+      function updateDashboard() {
+        fetch("/data")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) return;
+
+            // Update Sensor Values
+            document.getElementById("valRain").innerText = data.rainfall;
+            document.getElementById("valMoist").innerText = data.soil_moisture;
+            document.getElementById("valVib").innerText = data.vibration;
+            document.getElementById("valTemp").innerText = data.temperature;
+            document.getElementById("valHum").innerText = data.humidity;
+
+            // Update Risk
+            const riskValue = document.getElementById("riskValue");
+            const riskCard = document.getElementById("riskCard");
+            const alertBox = document.getElementById("alertBox");
+
+            riskValue.innerText = data.risk_level;
+
+            // Reset Classes
+            riskCard.className = "risk-card";
+
+            if (data.risk_code === 0) {
+              riskCard.classList.add("risk-low");
+              alertBox.style.display = "none";
+            } else if (data.risk_code === 1) {
+              riskCard.classList.add("risk-moderate");
+              alertBox.style.display = "none";
+            } else if (data.risk_code === 2) {
+              riskCard.classList.add("risk-high");
+              alertBox.style.display = "block";
+            }
+          })
+          .catch((err) => console.error("Error fetching data:", err));
+      }
+
+      // Update every 2 seconds
+      setInterval(updateDashboard, 2000);
+      updateDashboard();
+    </script>
+  </body>
+</html>

@@ -61,7 +61,7 @@ This service hosts the API and the ML Model.
 python landslide_prediction/server/app.py
 ```
 
-_Server runs on http://localhost:5000_
+_Server runs on http://localhost:8000_
 
 ### Step 3: Start the Dashboard
 
@@ -71,7 +71,7 @@ Open a new terminal, activate venv, and run:
 python landslide_prediction/dashboard/dashboard.py
 ```
 
-_Dashboard runs on http://localhost:5001_
+_Dashboard runs on http://localhost:8001_
 
 ---
 
@@ -90,9 +90,9 @@ python landslide_prediction/simulator/sensor_simulator.py
 If you want to manually test specific landslide conditions:
 
 1. Ensure the **Dashboard** is running.
-2. Open your browser to: **[http://localhost:5001/control](http://localhost:5001/control)**
+2. Open your browser to: **[http://localhost:8001/control](http://localhost:8001/control)**
 3. Use the sliders to adjust Rainfall, Moisture, and Vibration.
-4. Watch the main Dashboard ([http://localhost:5001](http://localhost:5001)) update in real-time!
+4. Watch the main Dashboard ([http://localhost:8001](http://localhost:8001)) update in real-time!
 
 **Triggering a Landslide Alert:**
 
@@ -116,7 +116,7 @@ You can control the simulator from your phone while watching the dashboard on yo
 2. Stop and Restart the **Server** and **Dashboard** (Ctrl+C and run again).
 3. Find your laptop's IP address (e.g., `10.3.153.133`).
 4. On your phone browser, go to:
-   `http://<YOUR_LAPTOP_IP>:5001/control`
-   _(Example: http://10.3.153.133:5001/control)_
+   `http://<YOUR_LAPTOP_IP>:8001/control`
+   _(Example: http://10.3.153.133:8001/control)_
 
 Now move the sliders on your phone and watch the laptop screen update instantly! 🤯

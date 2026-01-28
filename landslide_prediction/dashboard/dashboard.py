@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Backend API URL
-BACKEND_URL = "http://localhost:5000/api/status"
+BACKEND_URL = "http://localhost:8000/api/status"
 
 @app.route('/')
 def index():
@@ -31,10 +31,10 @@ def update_sensor():
     try:
         data = request.json
         # Forward to Backend API
-        response = requests.post("http://localhost:5000/api/sensor-data", json=data)
+        response = requests.post("http://localhost:8000/api/sensor-data", json=data)
         return jsonify(response.json()), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=8001, debug=True)

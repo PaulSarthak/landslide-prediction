@@ -4,7 +4,7 @@ import requests
 import json
 import math
 
-SERVER_URL = "http://localhost:5000/api/sensor-data"
+SERVER_URL = "http://localhost:8000/api/sensor-data"
 INTERVAL = 2  # seconds between readings
 
 def generate_sensor_data(t):

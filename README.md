@@ -107,3 +107,16 @@ If you want to manually test specific landslide conditions:
 - **Moderate Risk** (Yellow) occurs with elevated rainfall.
 - **High Risk** (Red) occurs with extreme conditions or seismic vibration.
 - This is an academic prototype.
+
+## 📱 Mobile Control (Bonus)
+
+You can control the simulator from your phone while watching the dashboard on your laptop!
+
+1. Ensure your phone and laptop are on the **same Wi-Fi**.
+2. Stop and Restart the **Server** and **Dashboard** (Ctrl+C and run again).
+3. Find your laptop's IP address (e.g., `10.3.153.133`).
+4. On your phone browser, go to:
+   `http://<YOUR_LAPTOP_IP>:5001/control`
+   _(Example: http://10.3.153.133:5001/control)_
+
+Now move the sliders on your phone and watch the laptop screen update instantly! 🤯

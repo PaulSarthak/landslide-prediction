@@ -7,9 +7,21 @@ app = Flask(__name__)
 # Backend API URL
 BACKEND_URL = "http://localhost:8000/api/status"
 
+import socket
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    try:
+        # Get local IP address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+    except:
+        local_ip = "localhost"
+        
+    control_url = f"http://{local_ip}:8001/control"
+    return render_template('index.html', control_url=control_url)
 
 @app.route('/data')
 def get_data():
@@ -37,4 +49,13 @@ def update_sensor():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    import threading
+    import webbrowser
+    import time
+    
+    def open_browser():
+        time.sleep(1) # Wait for server to start
+        webbrowser.open('http://localhost:8001')
+        
+    threading.Thread(target=open_browser).start()
     app.run(host='0.0.0.0', port=8001, debug=True)

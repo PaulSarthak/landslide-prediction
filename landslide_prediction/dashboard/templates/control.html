@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Control Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .control-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        .value-display {
+            float: right;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .nav-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #7f8c8d;
+        }
+        .status {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            height: 20px;
+        }
+        .status.success { color: #27ae60; }
+        .status.error { color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎛 Simulator Control</h1>
+        <div class="status" id="statusMsg">Connected</div>
+
+        <div class="control-group">
+            <label>Rainfall (mm/h) <span class="value-display" id="dispRain">0</span></label>
+            <input type="range" id="sliderRain" min="0" max="150" value="0">
+        </div>
+
+        <div class="control-group">
+            <label>Soil Moisture (%) <span class="value-display" id="dispMoist">30</span></label>
+            <input type="range" id="sliderMoist" min="0" max="100" value="30">
+        </div>
+
+        <div class="control-group">
+            <label>Vibration (Normalized) <span class="value-display" id="dispVib">0.05</span></label>
+            <input type="range" id="sliderVib" min="0" max="1" step="0.01" value="0.05">
+        </div>
+
+        <div class="control-group">
+            <label>Temperature (°C) <span class="value-display" id="dispTemp">25</span></label>
+            <input type="range" id="sliderTemp" min="-10" max="50" step="0.1" value="25">
+        </div>
+
+        <div class="control-group">
+            <label>Humidity (%) <span class="value-display" id="dispHum">50</span></label>
+            <input type="range" id="sliderHum" min="0" max="100" value="50">
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <p style="font-size: 0.9em; color: #666;">
+                <i>Tip: Increase Rainfall > 80 OR (Rain > 50 & Moisture > 70) for High Risk.</i>
+            </p>
+        </div>
+
+        <a href="/" class="nav-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        const sliders = {
+            rainfall: document.getElementById('sliderRain'),
+            soil_moisture: document.getElementById('sliderMoist'),
+            vibration: document.getElementById('sliderVib'),
+            temperature: document.getElementById('sliderTemp'),
+            humidity: document.getElementById('sliderHum')
+        };
+
+        const displays = {
+            rainfall: document.getElementById('dispRain'),
+            soil_moisture: document.getElementById('dispMoist'),
+            vibration: document.getElementById('dispVib'),
+            temperature: document.getElementById('dispTemp'),
+            humidity: document.getElementById('dispHum')
+        };
+
+        const statusMsg = document.getElementById('statusMsg');
+
+        function updateBackend() {
+            const data = {
+                rainfall: parseFloat(sliders.rainfall.value),
+                soil_moisture: parseFloat(sliders.soil_moisture.value),
+                vibration: parseFloat(sliders.vibration.value),
+                temperature: parseFloat(sliders.temperature.value),
+                humidity: parseFloat(sliders.humidity.value)
+            };
+
+            // Update displays
+            for (let key in data) {
+                displays[key].innerText = data[key];
+            }
+
+            // Send to Proxy
+            fetch('/api/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.risk_level) {
+                   statusMsg.innerText = `Prediction: ${resData.risk_level} Risk`;
+                   statusMsg.className = 'status success';
+                   
+                   // Visual feedback for High Risk
+                   if(resData.risk_code == 2) statusMsg.style.color = '#e74c3c';
+                   else if(resData.risk_code == 1) statusMsg.style.color = '#f39c12';
+                   else statusMsg.style.color = '#27ae60';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                statusMsg.innerText = "Error sending data";
+                statusMsg.className = 'status error';
+            });
+        }
+
+        // Add Listeners
+        for (let key in sliders) {
+            sliders[key].addEventListener('input', updateBackend);
+        }
+        
+        // Initial send
+        updateBackend();
+
+    </script>
+</body>
+</html>

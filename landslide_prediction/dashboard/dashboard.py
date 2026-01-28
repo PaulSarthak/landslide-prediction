@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import requests
 import os
 
@@ -19,6 +19,20 @@ def get_data():
             return jsonify(response.json())
         else:
             return jsonify({"error": "Backend Error"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/control')
+def control():
+    return render_template('control.html')
+
+@app.route('/api/update', methods=['POST'])
+def update_sensor():
+    try:
+        data = request.json
+        # Forward to Backend API
+        response = requests.post("http://localhost:5000/api/sensor-data", json=data)
+        return jsonify(response.json()), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
